@@ -1,14 +1,20 @@
 import { useState, useRef, useContext } from "react";
 import AuthContext from "../store/auth-context";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
   const authCntxt = useContext(AuthContext);
+
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
   const emailRef = useRef();
   const passwordRef = useRef();
+
+  const history = useHistory();
+
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
@@ -32,6 +38,7 @@ const AuthForm = () => {
         if (response) {
           alert("Logged In successfully");
         }
+        history.replace('/');
       } else {
         const response = await axios.post(
           "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAfMEq7M-S7-Re5qq_JW-tytrkN81LhH_E",
