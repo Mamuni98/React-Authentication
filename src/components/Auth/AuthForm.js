@@ -1,8 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
+import AuthContext from "../store/auth-context";
 import axios from "axios";
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
+  const authCntxt = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef();
@@ -25,9 +27,10 @@ const AuthForm = () => {
             returnSecureToken: true,
           }
         );
-        console.log(response.data.idToken);
-        if(response){
-          alert("Logged In successfully")
+        const token = response.data.idToken;
+        authCntxt.logIn(token);
+        if (response) {
+          alert("Logged In successfully");
         }
       } else {
         const response = await axios.post(
@@ -39,13 +42,13 @@ const AuthForm = () => {
           }
         );
         console.log(response);
-        if(response){
-          alert("Successfully Signed up")
+        if (response) {
+          alert("Successfully Signed up");
         }
       }
     } catch (err) {
       const alertmsg = err.response.data.error.message;
-      alert(`${alertmsg}`);
+      alert(alertmsg);
     }
     setIsLoading(false);
     event.target.reset();
@@ -65,14 +68,12 @@ const AuthForm = () => {
         </div>
         <div className={classes.actions}>
           {!isLoading ? (
-            <button type="submit" className={classes.toggle}>
-              {isLogin ? "Log In" : "Sign Up"}
+            <button type="submit">
+              {isLogin ? "Log In" : "Create Account"}
             </button>
           ) : (
-            <p style={{color:"white"}}>Sending request..</p>
+            <p style={{ color: "white" }}>Sending request..</p>
           )}
-        </div>
-        <div className={classes.actions}>
           <button
             type="button"
             className={classes.toggle}
