@@ -4,7 +4,7 @@ import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const[isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
   const switchAuthModeHandler = () => {
@@ -17,9 +17,19 @@ const AuthForm = () => {
       const email = emailRef.current.value;
       const password = passwordRef.current.value;
       if (isLogin) {
-
-      } 
-      else {
+        const response = await axios.post(
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAfMEq7M-S7-Re5qq_JW-tytrkN81LhH_E",
+          {
+            email: email,
+            password: password,
+            returnSecureToken: true,
+          }
+        );
+        console.log(response.data.idToken);
+        if(response){
+          alert("Logged In successfully")
+        }
+      } else {
         const response = await axios.post(
           "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAfMEq7M-S7-Re5qq_JW-tytrkN81LhH_E",
           {
@@ -29,6 +39,9 @@ const AuthForm = () => {
           }
         );
         console.log(response);
+        if(response){
+          alert("Successfully Signed up")
+        }
       }
     } catch (err) {
       const alertmsg = err.response.data.error.message;
@@ -51,13 +64,14 @@ const AuthForm = () => {
           <input type="password" id="password" ref={passwordRef} required />
         </div>
         <div className={classes.actions}>
-          {!isLoading ? <button
-            type="submit"
-            className={classes.toggle}
-          >
-            {isLogin ? "Log In" : "Sign Up"}
-          </button> : <p>loading...</p>}
-          </div>
+          {!isLoading ? (
+            <button type="submit" className={classes.toggle}>
+              {isLogin ? "Log In" : "Sign Up"}
+            </button>
+          ) : (
+            <p style={{color:"white"}}>Sending request..</p>
+          )}
+        </div>
         <div className={classes.actions}>
           <button
             type="button"
