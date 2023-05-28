@@ -15,7 +15,7 @@ export const AuthConTextProvider = (props) => {
     setTimeout(() => {
       localStorage.removeItem("token");
     }, 1000*60*5);
-  });
+  },[]);
 
   const logInHandler = (token) => {
     localStorage.setItem("token", token);
